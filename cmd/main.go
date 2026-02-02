@@ -39,6 +39,15 @@ func main() {
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 
+	// Health check route for production verification
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status":  "ok",
+			"service": "smart-rentals-backend",
+			"env":     cfg.Environment,
+		})
+	})
+
 	// CORS is handled by middleware.CORS(cfg) in routes.go
 	// No hardcoded CORS here - all CORS configuration is in config
 
