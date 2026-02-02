@@ -17,6 +17,11 @@ func main() {
 		log.Fatal("Failed to load config:", err)
 	}
 
+	// Validate configuration - fail fast if required vars are missing
+	if err := cfg.Validate(); err != nil {
+		log.Fatal("Configuration validation failed:", err)
+	}
+
 	// Initialize database
 	db, err := database.NewDatabase(cfg.GetDSN())
 	if err != nil {
@@ -34,25 +39,15 @@ func main() {
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 
-	// CORS middleware
-	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	})
+	// CORS is handled by middleware.CORS(cfg) in routes.go
+	// No hardcoded CORS here - all CORS configuration is in config
 
 	// Initialize routes using the dedicated routes package
 	api.SetupRoutes(r, db, cfg)
 
 	// Start server with configured host and port
 	serverAddr := cfg.Server.Host + ":" + cfg.Server.Port
-	log.Printf("Server starting on %s", serverAddr)
+	log.Printf("Server starting on %s (environment: %s)", serverAddr, cfg.Environment)
 
 	srv := &http.Server{
 		Addr:         serverAddr,
