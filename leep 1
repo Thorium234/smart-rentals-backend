@@ -1,0 +1,28 @@
+                                                                   Table "public.users"
+    Column     |           Type           | Collation | Nullable |              Default              | Storage  | Compression | Stats target | Description 
+---------------+--------------------------+-----------+----------+-----------------------------------+----------+-------------+--------------+-------------
+ id            | integer                  |           | not null | nextval('users_id_seq'::regclass) | plain    |             |              | 
+ email         | character varying(255)   |           | not null |                                   | extended |             |              | 
+ password_hash | text                     |           | not null |                                   | extended |             |              | 
+ full_name     | character varying(255)   |           | not null |                                   | extended |             |              | 
+ phone         | character varying(50)    |           |          |                                   | extended |             |              | 
+ role          | character varying(50)    |           | not null |                                   | extended |             |              | 
+ created_at    | timestamp with time zone |           | not null | now()                             | plain    |             |              | 
+ updated_at    | timestamp with time zone |           | not null | now()                             | plain    |             |              | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (id)
+    "users_email_key" UNIQUE CONSTRAINT, btree (email)
+Referenced by:
+    TABLE "properties" CONSTRAINT "fk_properties_landlord" FOREIGN KEY (landlord_id) REFERENCES users(id) ON DELETE CASCADE
+    TABLE "paybills" CONSTRAINT "paybills_landlord_id_fkey" FOREIGN KEY (landlord_id) REFERENCES users(id)
+    TABLE "tills" CONSTRAINT "tills_landlord_id_fkey" FOREIGN KEY (landlord_id) REFERENCES users(id)
+Not-null constraints:
+    "users_id_not_null" NOT NULL "id"
+    "users_email_not_null" NOT NULL "email"
+    "users_password_hash_not_null" NOT NULL "password_hash"
+    "users_full_name_not_null" NOT NULL "full_name"
+    "users_role_not_null" NOT NULL "role"
+    "users_created_at_not_null" NOT NULL "created_at"
+    "users_updated_at_not_null" NOT NULL "updated_at"
+Access method: heap
+

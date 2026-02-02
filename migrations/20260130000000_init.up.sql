@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS paybill_transactions;
+DROP TABLE IF EXISTS till_transactions;
+DROP TABLE IF EXISTS paybills;
+DROP TABLE IF EXISTS tills;
+DROP TABLE IF EXISTS tenants;
+DROP TABLE IF EXISTS units;
+DROP TABLE IF EXISTS properties;
+DROP TABLE IF EXISTS users;
