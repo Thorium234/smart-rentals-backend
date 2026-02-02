@@ -62,8 +62,9 @@ func main() {
 	api.SetupRoutes(r, db, cfg)
 
 	// Start server with configured host and port
-	serverAddr := cfg.Server.Host + ":" + cfg.Server.Port
-	log.Printf("Server starting on %s (environment: %s)", serverAddr, cfg.Environment)
+	// In production, binding to ":PORT" is most reliable (equivalent to 0.0.0.0:PORT)
+	serverAddr := ":" + cfg.Server.Port
+	log.Printf("Server preparing to listen on %s (environment: %s)", serverAddr, cfg.Environment)
 
 	srv := &http.Server{
 		Addr:         serverAddr,
@@ -72,8 +73,9 @@ func main() {
 		WriteTimeout: cfg.Server.WriteTimeout,
 	}
 
+	log.Printf("🚀 Starting HTTP server on %s...", serverAddr)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal("Server failed to start:", err)
+		log.Fatalf("CRITICAL: Server failed to start on %s: %v", serverAddr, err)
 	}
 }
 
