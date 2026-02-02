@@ -1,0 +1,11 @@
+[build]
+builder = "nixpacks"
+# Explicitly tell Nixpacks where our main.go is
+buildCommand = "go build -o server cmd/main.go"
+
+[deploy]
+startCommand = "./server"
+healthcheckPath = "/"
+restartPolicy = "always"
+# Ensure we use Railway's injected PORT
+healthcheckTimeout = 100

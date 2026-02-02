@@ -11,24 +11,31 @@ import (
 )
 
 func main() {
+	log.Println("Starting Smart Rentals API...")
+
 	// Load configuration
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatal("Failed to load config:", err)
+		log.Fatalf("CRITICAL: Failed to load config: %v", err)
 	}
+
+	log.Printf("Configuration loaded (ENV: %s)", cfg.Environment)
 
 	// Validate configuration - fail fast if required vars are missing
 	if err := cfg.Validate(); err != nil {
-		log.Fatal("Configuration validation failed:", err)
+		log.Fatalf("CRITICAL: Configuration validation failed: %v", err)
 	}
+
+	log.Println("Configuration validated, connecting to database...")
 
 	// Initialize database
 	db, err := database.NewDatabase(cfg.GetDSN())
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		log.Fatalf("CRITICAL: Failed to connect to database: %v", err)
 	}
 	defer db.DB.Close()
 
+	log.Println("Database connected successfully")
 	// Set Gin mode
 	if cfg.Environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
